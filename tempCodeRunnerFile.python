@@ -1,0 +1,227 @@
+import sys
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QPixmap
+import sign_in_mud
+import login_mud
+
+class Window(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Price comparison")
+        self.setGeometry(0, 0, 1700, 800)
+        self.sign_in_status = False
+        self.UI()
+        
+    def UI(self):
+        mainLayout = QVBoxLayout()
+        topLayout = QHBoxLayout()
+        midLayout = QHBoxLayout()
+        bottomLayout = QHBoxLayout()
+        mainLayout.addLayout(topLayout)
+        mainLayout.addLayout(midLayout)
+        mainLayout.addLayout(bottomLayout)
+        font_title = QFont()
+        font_title.setPointSize(24)  # Set the desired font size
+        font_cat = QFont()
+        font_cat.setPixelSize(20)
+
+        self.favotite =QPushButton('Favorite products')
+        self.title = QLabel('Price comparison', self)
+        self.title.setFont(font_title)
+        self.title.setAlignment(Qt.AlignCenter)
+        self.search_box = QLineEdit(self)
+        self.search_but = QPushButton('search', self)
+        if self.sign_in_status == True:
+            self.username = QLabel('Welcome username!', self)
+            self.username.setStyleSheet("font-size: 20px;")
+            topLayout.addWidget(self.username)
+            self.username.setContentsMargins(0, 0, 0, 0)
+            topLayout.addWidget(self.favotite)
+        else:
+            self.sign_in_but=QPushButton('Sign in',self)
+            self.login_in_but=QPushButton('Login',self)
+            topLayout.addWidget(self.sign_in_but)
+            topLayout.addWidget(self.login_in_but)
+            self.sign_in_but.clicked.connect(self.open_sign_in_window)
+            self.login_in_but.clicked.connect(self.open_login_window)
+        topLayout.addStretch()  # Add stretch to push widgets to the right
+        topLayout.addWidget(self.title)
+        topLayout.addWidget(self.search_box)
+        topLayout.addWidget(self.search_but)
+        topLayout.setContentsMargins(200, 0, 0, 200)  # left, top, right, bottom
+        self.search_box.setContentsMargins(500, 0, 0, 0)
+
+
+
+        self.cat_but1 = QPushButton('Mobile', self)
+        self.cat_but2 = QPushButton('Tablet', self)
+        self.cat_but3 = QPushButton('Headphone', self)
+        self.cat_but4 = QPushButton('Laptop', self)
+        self.cat_but5 = QPushButton('Tv', self)
+        self.cat_title = QLabel('Categories: ', self)
+        self.cat_title.setFont(font_cat)
+        midLayout.addStretch()
+        midLayout.addWidget(self.cat_title)
+        midLayout.addWidget(self.cat_but1)
+        midLayout.addWidget(self.cat_but2)
+        midLayout.addWidget(self.cat_but3)
+        midLayout.addWidget(self.cat_but4)
+        midLayout.addWidget(self.cat_but5)
+        midLayout.addStretch()
+        midLayout.setContentsMargins(0, 0, 0, 400)
+
+        v1 = QVBoxLayout()
+        v2 = QVBoxLayout()
+        v3 = QVBoxLayout()
+        self.image1 = QLabel(self)
+        self.image1.setPixmap(QPixmap('image.png'))
+        self.image1_caption=QPushButton('product1',self)
+        self.image1.setAlignment(Qt.AlignCenter)
+        self.image2 = QLabel(self)
+        self.image2.setPixmap(QPixmap('image.png'))
+        self.image2_caption=QPushButton('product2',self)
+        self.image2.setAlignment(Qt.AlignCenter)
+        self.image3 = QLabel(self)
+        self.image3.setPixmap(QPixmap('image.png'))
+        self.image3_caption=QPushButton('product3',self)
+        self.image3.setAlignment(Qt.AlignCenter)
+        v1.addWidget(self.image1)
+        v1.addWidget(self.image1_caption)
+        v2.addWidget(self.image2)
+        v2.addWidget(self.image2_caption)
+        v3.addWidget(self.image3)
+        v3.addWidget(self.image3_caption)
+        bottomLayout.addLayout(v1)
+        bottomLayout.addLayout(v2)
+        bottomLayout.addLayout(v3)
+        self.setLayout(mainLayout)
+        self.cat_but1.clicked.connect(lambda: self.open_category_page('Mobile'))
+        self.cat_but2.clicked.connect(lambda: self.open_category_page('Tablet'))
+        self.cat_but3.clicked.connect(lambda: self.open_category_page('Headphone'))
+        self.cat_but4.clicked.connect(lambda: self.open_category_page('Laptop'))
+        self.cat_but5.clicked.connect(lambda: self.open_category_page('TV'))
+        self.image1_caption.clicked.connect(self.open_product_page)
+        self.image2_caption.clicked.connect(self.open_product_page)
+        self.image3_caption.clicked.connect(self.open_product_page)
+        self.show()
+
+    def open_sign_in_window(self):
+        self.sign_in_window = sign_in_mud.sign_in_window()
+        self.sign_in_window.sign_UI()
+    def open_login_window(self):
+        self.login_window = login_mud.log_in_window()
+        self.login_window.log_UI()    
+    def open_category_page(self, category_name):
+        self.category_page = category_Window(category_name)
+        self.category_page.cat_UI()
+    def open_product_page(self):
+        self.product_page = display_product()
+        self.product_page.product_UI()
+
+class category_Window(QWidget):
+    def __init__(self,category):
+        super().__init__()
+        self.setWindowTitle("category")
+        self.setGeometry(0, 0, 1700, 800)
+        self.category = category
+        self.cat_UI()
+    def cat_UI(self):
+
+        font_title = QFont()
+        font_title.setPointSize(28)
+        mainLayout = QVBoxLayout()
+        topLayout = QHBoxLayout()
+        midlayout = QHBoxLayout()
+        bottomlayout = QHBoxLayout()       
+        mainLayout.addLayout(topLayout)
+        mainLayout.addLayout(midlayout)
+        mainLayout.addLayout(bottomlayout)
+        cat_title = QLabel(self.category, self)
+        cat_title.setAlignment(Qt.AlignCenter)
+        cat_title.setFont(font_title)
+        topLayout.addWidget(cat_title)    
+        for i in range(1,6):
+            self.product_layout = QVBoxLayout()
+            product_image = QLabel(self)
+            product_label = QPushButton(f'Product {i}')
+            product_image.setPixmap(QPixmap('image.png'))
+            product_image.setAlignment(Qt.AlignCenter)
+            self.product_layout.addWidget(product_image)
+            self.product_layout.addWidget(product_label)
+            midlayout.addLayout(self.product_layout)
+            product_label.clicked.connect(self.open_product_page)
+        for i in range(6,11):
+            self.product_layout = QVBoxLayout()
+            product_image = QLabel(self)
+            product_label = QPushButton(f'Product {i}')
+            product_image.setPixmap(QPixmap('image.png'))
+            product_image.setAlignment(Qt.AlignCenter)
+            self.product_layout.addWidget(product_image)
+            self.product_layout.addWidget(product_label)
+            bottomlayout.addLayout(self.product_layout)
+            product_label.clicked.connect(self.open_product_page)
+        self.setLayout(mainLayout)
+        self.show() 
+
+    def open_product_page(self):
+        # button = self.sender()  # Get the button that emitted the signal
+        # text = button.text()  # Retrieve the text of the button
+        self.product_page = display_product()
+        self.product_page.product_UI()
+class display_product(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Product")
+        self.setGeometry(200, 200, 400, 600)
+        self.product_UI()
+    def product_UI(self):
+        mainlayout= QVBoxLayout()
+        toplayout = QHBoxLayout()
+        price1layout = QHBoxLayout()
+        price2layout = QHBoxLayout()
+        price3layout = QHBoxLayout()
+        descriptionlayout = QHBoxLayout()
+        mainlayout.addLayout(toplayout)
+        mainlayout.addLayout(price1layout)
+        mainlayout.addLayout(price2layout)
+        mainlayout.addLayout(price3layout)
+        mainlayout.addLayout(descriptionlayout)
+        product_image = QLabel(self)
+        product_image.setPixmap(QPixmap('image.png'))
+        product_image.setAlignment(Qt.AlignCenter)
+        toplayout.addWidget(product_image)
+        price1_lable = QLabel('Price1 :')
+        price1_value = QPushButton('value1')
+        price2_lable = QLabel('Price2 :')
+        price2_value = QPushButton('value2')
+        price3_lable = QLabel('Price3 :')
+        price3_value = QPushButton('value3')
+        price1layout.addWidget(price1_lable)
+        price1layout.addWidget(price1_value) 
+        price2layout.addWidget(price2_lable)
+        price2layout.addWidget(price2_value)    
+        price3layout.addWidget(price3_lable)
+        price3layout.addWidget(price3_value)
+        self.setLayout(mainlayout)
+        des_label = QLabel('Description:')
+        descriptionlayout.addWidget(des_label)
+        description_text = QTextEdit()
+        description_text.setReadOnly(True)
+        description_text.setText("Product description goes here.")
+        descriptionlayout.addWidget(description_text)
+        
+        
+        
+        self.show() 
+
+
+    
+def main():
+    App = QApplication(sys.argv)
+    window = Window()
+    sys.exit(App.exec_())
+
+if __name__ == '__main__':
+    main()
