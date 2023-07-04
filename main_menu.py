@@ -3,8 +3,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
-import sign_in_mud
-import login_mud
+import sign
+
 
 
 class Window(QWidget):
@@ -12,7 +12,6 @@ class Window(QWidget):
         super().__init__()
         self.setWindowTitle("Price comparison")
         self.setGeometry(0, 0, 1700, 800)
-        self.sign_in_status = False
         self.UI()
 
     def UI(self):
@@ -34,20 +33,20 @@ class Window(QWidget):
         self.title.setAlignment(Qt.AlignCenter)
         self.search_box = QLineEdit(self)
         self.search_but = QPushButton('search', self)
-        if self.sign_in_status == True:
-            self.username = QLabel('Welcome username!', self)
-            self.username.setStyleSheet("font-size: 20px;")
-            topLayout.addWidget(self.username)
-            self.username.setContentsMargins(0, 0, 0, 0)
-            topLayout.addWidget(self.favotite)
-        else:
-            self.sign_in_but = QPushButton('Sign in', self)
-            self.login_in_but = QPushButton('Login', self)
-            topLayout.addWidget(self.sign_in_but)
-            topLayout.addWidget(self.login_in_but)
-            self.sign_in_but.clicked.connect(self.open_sign_in_window)
-            self.login_in_but.clicked.connect(self.open_login_window)
-        topLayout.addStretch()  # Add stretch to push widgets to the right
+        # if self.sign_in_status == True:
+        #     self.username = QLabel('Welcome username!', self)
+        #     self.username.setStyleSheet("font-size: 20px;")
+        #     topLayout.addWidget(self.username)
+        #     self.username.setContentsMargins(0, 0, 0, 0)
+        #     topLayout.addWidget(self.favotite)
+        # else:
+        #     self.sign_in_but = QPushButton('Sign in', self)
+        #     self.login_in_but = QPushButton('Login', self)
+        #     topLayout.addWidget(self.sign_in_but)
+        #     topLayout.addWidget(self.login_in_but)
+        #     self.sign_in_but.clicked.connect(self.open_sign_in_window)
+        #     self.login_in_but.clicked.connect(self.open_login_window)
+        # topLayout.addStretch()  # Add stretch to push widgets to the right
         topLayout.addWidget(self.title)
         topLayout.addWidget(self.search_box)
         topLayout.addWidget(self.search_but)
@@ -111,13 +110,13 @@ class Window(QWidget):
         self.image3_caption.clicked.connect(self.open_product_page)
         self.show()
 
-    def open_sign_in_window(self):
-        self.sign_in_window = sign_in_mud.sign_in_window()
-        self.sign_in_window.sign_UI()
+    # def open_sign_in_window(self):
+    #     self.sign_in_window = sign_in_mud.sign_in_window()
+    #     self.sign_in_window.sign_UI()
 
-    def open_login_window(self):
-        self.login_window = login_mud.log_in_window()
-        self.login_window.log_UI()
+    # def open_login_window(self):
+    #     self.login_window = login_mud.log_in_window()
+    #     self.login_window.log_UI()
 
     def open_category_page(self, category_name):
         self.category_page = category_Window(category_name)
