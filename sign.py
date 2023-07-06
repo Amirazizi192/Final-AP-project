@@ -1,11 +1,11 @@
-#sign.py code
+# sign.py code
 import sys
 import hashlib
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import pyqtSignal
 import sqlite3
 import main_menu
-
+import data
 status = False
 
 class log_in_window(QWidget):
@@ -51,8 +51,9 @@ class log_in_window(QWidget):
         if result:
             QMessageBox.information(self,"Information","Login successful!")
             # Emit the signal with the username
-            self.loginCompleted.emit(username)
             self.hide()
+            self.loginCompleted.emit(username)
+            
         else:
             QMessageBox.information(self,"Information","Login failed!")
 
@@ -115,13 +116,17 @@ class sign_in_window(QWidget):
             self.database_conn.commit()
             cursor.close()
             QMessageBox.information(self,"Information","You signed in!")
+            self.hide()
             # Emit the signal with the username
             self.signInCompleted.emit(username)
-            self.hide()
+ 
 
     def display_login_form(self):
         self.hide()
         self.login_page.show()
+
+
+
 
 
 def sign_main():
@@ -140,6 +145,8 @@ def sign_main():
         global appeared_username, status
         appeared_username = username
         status = True
+        getdata = data.get_data()
+        # getdata.get__data()
         main_menu_window = main_menu.Window(username)  # Create an instance of the main menu window
         main_menu_window.show()  # Show the main menu window
 
@@ -147,6 +154,8 @@ def sign_main():
         global appeared_username, status
         appeared_username = username
         status = True
+        getdata = data.get_data()
+        # getdata.get__data()
         main_menu_window = main_menu.Window(username)  # Create an instance of the main menu window
         main_menu_window.show()  # Show the main menu window
     windows.signInCompleted.connect(handle_sign_in_completed)
