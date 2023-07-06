@@ -19,7 +19,7 @@ from PyQt5.QtGui import QIcon, QDesktopServices
 from PIL import Image
 import io
 
-conn = sqlite3.connect('database.db')
+conn = sqlite3.connect('users3.db')
 cursor = conn.cursor()
 
 class Window(QWidget):
@@ -148,7 +148,177 @@ class Window(QWidget):
         self.show()
 
     def show_search_result(self):
-        pass
+        if self.search_in_app_rbut.isChecked():
+            search_text = self.search_box.text()
+            cursor.execute('''SELECT name FROM products''')
+            products = cursor.fetchall()
+            normal_list = [item[0] for item in products]
+            matching_products = [product for product in normal_list if search_text.lower() in product.lower()]
+            self.open_search_page = search_page(matching_products,'None',self.username_title)
+            self.open_search_page.search_UI()
+        else:
+            driver=webdriver.Chrome()
+            search_value = self.search_box.text()
+            detail_list = []
+            def technolife() :
+                global my_current_url
+                driver.get(my_current_url)
+                time.sleep(2)
+                elements_search=driver.find_elements(By.CLASS_NAME,"ProductComp_product_title__bOrf5")
+                time.sleep(2)
+                name1=elements_search[0].text
+                time.sleep(2)
+                elements_search[0].send_keys(Keys.ENTER)
+                time.sleep(2)
+                driver.switch_to.window(driver.window_handles[0])
+                time.sleep(2)
+                try:
+                    Property=driver.find_element(By.ID,"ProductSpecPart")
+                    time.sleep(2)
+                    Property1=(Property.text)[:-24]
+                    detail_list.append(Property1)
+                except:
+                    Property1 = 'None'
+                    detail_list.append(Property1)  
+                try:
+                    url=driver.current_url
+                    detail_list.append(url)
+                except:
+                    url = 'None'
+                    detail_list.append(url)
+                try:    
+                    detail_list.append(name1)
+                except:
+                    detail_list.append('None')
+                try:
+                    time.sleep(2)
+                    price=driver.find_element(By.XPATH,"/html/body/div[1]/main/div[2]/div[3]/section[1]/div[3]/div[2]/div/h6/span[1]")
+                    price1 = price.text
+                    price1=str(price1).replace(',',"")
+                    detail_list.append(persian_to_english(price1))
+                    time.sleep(2)
+                except:
+                    detail_list.append('None')
+            def digikala() :
+                global price
+                driver.get("https://www.digikala.com")
+                time.sleep(5)
+                s=driver.find_element(By.CSS_SELECTOR,".SearchInput_SearchInput__HB9qi")
+                time.sleep(1)
+                s.click()
+                search_box=driver.find_element(By.CSS_SELECTOR,"input.color-500")
+                time.sleep(2)
+                search_box.send_keys(search_value)
+                time.sleep(2)
+                search_box.send_keys(Keys.ENTER)
+                time.sleep(2)
+                value=driver.find_elements(By.CSS_SELECTOR,"div.product-list_ProductList__item__LiiNI:nth-child(1) > a:nth-child(1) > div:nth-child(1) > article:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4) > div:nth-child(1) > div:nth-child(1)")
+                time.sleep(2)
+                driver.switch_to.window(driver.window_handles[0])
+                url=driver.current_url
+                try:
+                    detail_list.append(url)
+                except:
+                    detail_list.append('None')   
+                try:
+                    if "٪" in value[0].text :
+                        try:
+                            price=str(value[1].text).replace(',',"")
+                            detail_list.append(persian_to_english(price))
+                        except:
+                            detail_list.append('None')
+                    else :
+                        try:
+                            price=str(value[0].text).replace(',',"")
+                            detail_list.append(persian_to_english(price))
+                        except:
+                            detail_list.append('None')
+                except:
+                    detail_list.append('None')  
+                divar(detail_list[5])              
+            
+            
+            
+            def divar(digi_price) :
+                global price
+                driver.get("https://divar.ir/s/tehran")
+                time.sleep(3)
+                box_search=driver.find_element(By.CLASS_NAME,"kt-nav-text-field__input")
+                time.sleep(3)
+                box_search.send_keys(search_value)
+                box_search.send_keys(Keys.ENTER)
+                time.sleep(2)
+                current_url=driver.current_url
+                url2=re.split("tehran?",str(current_url))
+                try:
+                    if digi_price != 'None':
+                        min=int((6/10)*int(digi_price))
+                        max=int((11/10)*int(digi_price))
+                    elif detail_list[3] != 'None' :
+                        min=int((6/10)*int(detail_list[3]))                    
+                        max=int((11/10)*int(detail_list[3]))
+                    else:
+                        min = 0
+                        max = 100000000
+                    komaki="price="+str(min)+"-"+str(max)+"&"
+                    new_url=url2[0]+"tehran?"+komaki+url2[1][1:]
+                    driver.get(new_url)
+                    time.sleep(5)
+                    values=driver.find_elements(By.CLASS_NAME,"kt-post-card__description")
+                    time.sleep(3)
+                    pricce=values[1].text
+                    values[0].click()
+                    time.sleep(2)
+                    urrl=driver.current_url
+                    try:
+                        detail_list.append(urrl)
+                    except:
+                        detail_list.append('None')
+                    try:
+                        detail_list.append(persian_to_english(pricce)[:-5].replace(',',""))
+                    except:
+                        detail_list.append('None')
+                except:
+                    detail_list.append('None')
+                    detail_list.append('None')
+
+            
+            def search() :
+                global my_current_url
+                driver.get("https://www.technolife.ir/")
+                time.sleep(5)
+                box_search=driver.find_element(By.CSS_SELECTOR,"#search_box")
+                time.sleep(1)
+                box_search.send_keys(search_value)
+                time.sleep(2)
+                box_search.send_keys(Keys.ENTER)
+                time.sleep(4)
+                driver.switch_to.window(driver.window_handles[0])
+                time.sleep(1)
+                my_current_url=driver.current_url
+                # print(my_current_url)
+                technolife()
+            def persian_to_english(text):
+                persian_digits = "۰۱۲۳۴۵۶۷۸۹"
+                english_digits = "0123456789"
+                translation_table = str.maketrans(persian_digits, english_digits)
+                return text.translate(translation_table)
+            try:                            
+                t1 = threading.Thread(target=search())
+                t2 = threading.Thread(target=digikala())
+                t1.start()
+                t2.start()
+                t1.join()
+                t2.join()
+                driver.close()
+                description , techno_url , name , techno_price , digi_url , digi_price, divar_url , divar_price = detail_list
+                self.search_page = search_result(name,techno_price,digi_price,description,digi_url,techno_url,divar_url,divar_price)
+                self.search_page.search_UI()
+            except ValueError as va:
+                print(va)
+                QMessageBox.information(self,"Information","Search was not succesful")
+
+
     def open_dynamic_window(self):
         self.dynpage = dynamic_Window()
         self.dynpage.dyn_UI()
@@ -572,7 +742,7 @@ class dynamic_Window(QWidget):
         self.setLayout(mainLayout)
         self.show()
 
-# class search_result(QWidget):        
+class search_result(QWidget):        
     def __init__(self,product_name,price_techno,price_digi,description,digi_url,techno_url,divar_url,divar_price):
         super().__init__()
         self.setWindowTitle('Search result')
@@ -638,7 +808,7 @@ class dynamic_Window(QWidget):
             # Open the URL in the default web browser
             QDesktopServices.openUrl(url1)
 
-# class search_page(QWidget):
+class search_page(QWidget):
     def __init__(self,products,category_name,username_title):
         super().__init__()
         self.setWindowTitle('Search result')
