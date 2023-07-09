@@ -1,7 +1,6 @@
-#main_menu code
 import sys
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
 import sign
@@ -21,69 +20,61 @@ import io
 import tempfile
 import requests
 
-conn = sqlite3.connect('database.db')
+conn = sqlite3.connect('users3.db')
 cursor = conn.cursor()
 
 class Window(QWidget):
     def __init__(self,username):
         super().__init__()
         self.setWindowTitle("Price comparison")
-        self.setGeometry(0, 0, 1700, 800)
+        self.setGeometry(0, 0, 1900, 1000)
         self.username_title = username
         self.UI()
-
     def UI(self):
         mainLayout = QVBoxLayout()
         topLayout = QHBoxLayout()
-        topchild1 = QHBoxLayout()
-        topchild2 = QHBoxLayout()
-        searchlayout = QHBoxLayout()
+        usernamelayout = QHBoxLayout()
+        searchLayout = QHBoxLayout()
         midLayout = QHBoxLayout()
         bottomLayout = QHBoxLayout()
-        topLayout.addLayout(topchild1)
-        topLayout.addLayout(topchild2)
-        mainLayout.addLayout(topLayout)
-        mainLayout.addLayout(searchlayout)
-        mainLayout.addLayout(midLayout)
-        mainLayout.addLayout(bottomLayout)
-        font_title = QFont()
-        font_title.setPointSize(24)  
-        font_cat = QFont()
-        font_cat.setPixelSize(20)
 
-        self.favorite = QPushButton('Favorite products')
-        self.title = QLabel('Price comparison', self)
-        self.title.setFont(font_title)
-        self.title.setAlignment(Qt.AlignCenter)
-        self.search_in_app_rbut =QRadioButton('internal search')
-        self.search_in_net_rbut =QRadioButton('online search')
-        self.search_box = QLineEdit(self)
-        self.search_but = QPushButton('search', self)
-        self.username = QLabel(f'Welcome {self.username_title}', self)
-        self.username.setStyleSheet("font-size: 24px;")
-        topchild1.addWidget(self.username)
-        # topchild1.addStretch()
-        topchild2.addStretch()
-        topchild2.addWidget(self.title)
-        topchild2.addStretch()
-        topchild2.setAlignment(Qt.AlignCenter)
-        topchild2.addStretch()
-        self.title.setStyleSheet('color: red;')
-        searchlayout.addStretch()
-        searchlayout.addWidget(self.search_in_app_rbut)
-        searchlayout.addWidget(self.search_in_net_rbut)
-        searchlayout.addWidget(self.search_box)
-        searchlayout.addWidget(self.search_but)
-        searchlayout.addStretch()
-        self.cat_but1 = QPushButton('Mobile', self)
-        self.cat_but2 = QPushButton('Tablet', self)
-        self.cat_but3 = QPushButton('Headphone', self)
-        self.cat_but4 = QPushButton('Laptop', self)
-        self.cat_but5 = QPushButton('Tv', self)
-        self.cat_but6 = QPushButton('Dynamic product', self)
-        self.cat_title = QLabel('Categories: ', self)
-        self.cat_title.setFont(font_cat)
-        midLayout.addStretch()
+        self.favorite = QPushButton('Favorite Products')
+        self.favorite.setObjectName('favoriteButton')
+        self.title = QLabel('Price Comparison')
+        self.title.setObjectName('titleLabel')
+        self.search_in_app_rbut = QRadioButton('Internal Search')
+        self.search_in_net_rbut = QRadioButton('Online Search')
+        self.search_box = QLineEdit()
+        self.search_but = QPushButton('Search')
+        self.username = QLabel(f'Welcome {self.username_title}')
+        self.username.setObjectName('usernameLabel')
+        self.username_icon = QLabel()
+        user_icon = QPixmap('user.png')
+        user_icon = user_icon.scaled(30, 30)
+        self.username_icon.setPixmap(user_icon)
+        self.username_icon.setObjectName('usernameLabel')
+        self.username_icon.setFixedSize(30, 30)
+        self.title.setAlignment(Qt.AlignCenter)  # Center align the title label
+
+        # topLayout.addWidget(self.username)
+        topLayout.addWidget(self.title)
+        usernamelayout.addWidget(self.username_icon)
+        usernamelayout.addWidget(self.username)
+        searchLayout.addWidget(self.search_in_app_rbut)
+        searchLayout.addWidget(self.search_in_net_rbut)
+        searchLayout.addWidget(self.search_box)
+        searchLayout.addWidget(self.search_but)
+        midLayout.addSpacing(30)
+
+        self.cat_but1 = QPushButton('Mobile')
+        self.cat_but2 = QPushButton('Tablet')
+        self.cat_but3 = QPushButton('Headphone')
+        self.cat_but4 = QPushButton('Laptop')
+        self.cat_but5 = QPushButton('TV')
+        self.cat_but6 = QPushButton('Dynamic Product')
+        self.cat_title = QLabel('Categories :')
+        self.cat_title.setObjectName('catLabel')
+        midLayout.addSpacing(30)
         midLayout.addWidget(self.cat_title)
         midLayout.addWidget(self.cat_but1)
         midLayout.addWidget(self.cat_but2)
@@ -92,51 +83,60 @@ class Window(QWidget):
         midLayout.addWidget(self.cat_but5)
         midLayout.addWidget(self.cat_but6)
         midLayout.addWidget(self.favorite)
-        midLayout.addStretch()
-        midLayout.setContentsMargins(0, 0, 0, 400)
 
         v1 = QVBoxLayout()
         v2 = QVBoxLayout()
         v3 = QVBoxLayout()
-        self.image1 = QLabel(self)
+        self.image1 = QLabel()
         pixmap = QPixmap('iphone 13 ch.png')
-        pixmap = pixmap.scaled(200, 200)  # Adjust the dimensions as needed
+        pixmap = pixmap.scaled(200, 200)
         self.image1.setPixmap(pixmap)
-        self.image1.show()
-        self.image1_caption = QPushButton('iphone 13 ch', self)
+        self.image1_caption = QPushButton('iphone 13 ch')
         self.image1.setAlignment(Qt.AlignCenter)
-        self.image2 = QLabel(self)
+
+
+        self.image2 = QLabel()
         pixmap2 = QPixmap('airpad 3.png')
-        pixmap2 = pixmap2.scaled(200, 200)  # Adjust the dimensions as needed
+        pixmap2 = pixmap2.scaled(200, 200)
         self.image2.setPixmap(pixmap2)
-        self.image2.show()
-        self.image2_caption = QPushButton('airpad 3', self)
+        self.image2_caption = QPushButton('airpad 3')
         self.image2.setAlignment(Qt.AlignCenter)
-        self.image3 = QLabel(self)
+        
+        self.image3 = QLabel()
         pixmap3 = QPixmap('galaxy tab a8.png')
-        pixmap3 = pixmap3.scaled(200, 200)  # Adjust the dimensions as needed
+        pixmap3 = pixmap3.scaled(200, 200)
         self.image3.setPixmap(pixmap3)
-        self.image3.show()
-        self.image3_caption = QPushButton('galaxy tab a8', self)
+        self.image3_caption = QPushButton('galaxy tab a8')
         self.image3.setAlignment(Qt.AlignCenter)
+        
+        
         v1.addWidget(self.image1)
         v1.addWidget(self.image1_caption)
         v2.addWidget(self.image2)
         v2.addWidget(self.image2_caption)
         v3.addWidget(self.image3)
         v3.addWidget(self.image3_caption)
+
         bottomLayout.addLayout(v1)
         bottomLayout.addLayout(v2)
         bottomLayout.addLayout(v3)
+
+        mainLayout.addLayout(topLayout)
+        mainLayout.addStretch()
+        mainLayout.addLayout(usernamelayout)
+        mainLayout.addStretch()
+        mainLayout.addLayout(searchLayout)
+        mainLayout.addStretch()
+        mainLayout.addLayout(midLayout)
+        mainLayout.addStretch()
+        mainLayout.addLayout(bottomLayout)
+
         self.setLayout(mainLayout)
-        self.cat_but1.clicked.connect(
-            lambda: self.open_category_page('Mobile'))
-        self.cat_but2.clicked.connect(
-            lambda: self.open_category_page('Tablet'))
-        self.cat_but3.clicked.connect(
-            lambda: self.open_category_page('Headphone'))
-        self.cat_but4.clicked.connect(
-            lambda: self.open_category_page('Laptop'))
+
+        self.cat_but1.clicked.connect(lambda: self.open_category_page('Mobile'))
+        self.cat_but2.clicked.connect(lambda: self.open_category_page('Tablet'))
+        self.cat_but3.clicked.connect(lambda: self.open_category_page('Headphone'))
+        self.cat_but4.clicked.connect(lambda: self.open_category_page('Laptop'))
         self.cat_but5.clicked.connect(lambda: self.open_category_page('TV'))
         self.cat_but6.clicked.connect(lambda: self.open_dynamic_window())
         self.image1_caption.clicked.connect(self.open_product_page)
@@ -144,6 +144,44 @@ class Window(QWidget):
         self.image3_caption.clicked.connect(self.open_product_page)
         self.favorite.clicked.connect(self.open_favorite_page)
         self.search_but.clicked.connect(self.show_search_result)
+
+        self.setStyleSheet('''
+            QWidget {
+                background-color: #F5F5F5;
+            }
+            QPushButton {
+                background-color: #007BFF;
+                color: #FFFFFF;
+                border: none;
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+            QPushButton:hover {
+                background-color: #0056b3;
+            }
+            QRadioButton {
+                font-size: 14px;
+            }
+            QLabel {
+                font-size: 20px;
+            }
+            #titleLabel {
+                color: red;
+                font-size: 48px;
+                font-weight: bold;
+            }
+            #usernameLabel {
+                font-size: 24px;
+            }
+            #favoriteButton {
+                background-color: orange;
+            }
+           #catLabel {
+           color: green;
+           font-size: 30px                        
+                           }               
+        ''')
+
         self.show()
 
     def show_search_result(self):
@@ -336,6 +374,7 @@ class Window(QWidget):
                 f.write(response.content)
                 return f.name
         return None
+   
     def open_dynamic_window(self):
         self.dynpage = dynamic_Window(self.username_title)
         self.dynpage.dyn_UI()
@@ -360,7 +399,7 @@ class category_Window(QWidget):
     def __init__(self, category_name,username_title):
         super().__init__()
         self.setWindowTitle(category_name)
-        self.setGeometry(0, 0, 1700, 800)
+        self.setGeometry(0, 0, 1700, 600)
         self.category_name = category_name
         self.username_title = username_title
         self.cat_UI()
@@ -374,9 +413,13 @@ class category_Window(QWidget):
         midlayout = QHBoxLayout()
         bottomlayout = QHBoxLayout()
         mainLayout.addLayout(topLayout)
+        mainLayout.addStretch()
         mainLayout.addLayout(midlayout)
+        mainLayout.addStretch()
         mainLayout.addLayout(bottomlayout)
         cat_title = QLabel(self.category_name, self)
+        # cat_title.setObjectName('titleLabel')
+        cat_title.setStyleSheet('color: #007BFF;font-size: 48px;font-weight: bold;')
         cat_title.setAlignment(Qt.AlignCenter)
         cat_title.setFont(font_title)
         topLayout.addWidget(cat_title)
@@ -398,6 +441,23 @@ class category_Window(QWidget):
             product_image = QLabel(self)
             product_image.setPixmap(scaled_pixmap)
             product_image.setAlignment(Qt.AlignCenter)
+            product_label.setStyleSheet(
+                """
+                QPushButton {
+                    background-color: #4CAF50;
+                    border: none;
+                    color: white;
+                    padding: 8px 16px;
+                    text-align: center;
+                    font-size: 16px;
+
+                }
+                QPushButton:hover {
+                    background-color: #45a049;
+                }
+
+                """
+            )
             self.product_layout.addWidget(product_image)
             self.product_layout.addWidget(product_label)
             midlayout.addLayout(self.product_layout)
@@ -461,11 +521,17 @@ class display_product(QWidget):
         product_image.setAlignment(Qt.AlignCenter)
         toplayout.addWidget(product_image)
         price1_lable = QLabel('Technolife price :')
+        price1_lable.setStyleSheet('background-color:#Eabfd6;padding: 10px; text-align: center; qproperty-alignment: AlignCenter;')
         price1_value = QPushButton(str(price1))
+        price1_value.setStyleSheet('background-color: #1d817b;color: #FFFFFF;')
         price2_lable = QLabel('Digikala price :')
+        price2_lable.setStyleSheet('background-color:#Eabfd6;padding: 10px; text-align: center; qproperty-alignment: AlignCenter;')
         price2_value = QPushButton(str(price2))
+        price2_value.setStyleSheet('background-color: #1d817b;color: #FFFFFF;')
         price3_lable = QLabel('Divar price :')
+        price3_lable.setStyleSheet('background-color:#Eabfd6;padding: 10px; text-align: center; qproperty-alignment: AlignCenter;')
         price3_value = QPushButton(str(price3))
+        price3_value.setStyleSheet('background-color: #1d817b;color: #FFFFFF;')
         price1_value.clicked.connect(lambda: self.open_web_page(url1))
         price2_value.clicked.connect(lambda: self.open_web_page(url2))
         price3_value.clicked.connect(lambda: self.open_web_page(url3))
@@ -483,13 +549,16 @@ class display_product(QWidget):
         description_text.setText(description)
         descriptionlayout.addWidget(description_text)
         add_to_favor_but = QPushButton('Add to favorite')
+        add_to_favor_but.setStyleSheet('background-color:orange;color:white')
         add_to_favor_but.clicked.connect(self.add_to_favorite)
         add_to_favor_layout.addWidget(add_to_favor_but)
         if self.category_name == 'None':
             pass
         else:
             combo_box = QComboBox()
+            combo_box.setStyleSheet('background-color: #Bfe8ea;')
             compare_but = QPushButton('Compare')
+            compare_but.setStyleSheet('background-color: #Bfe8ea;')
             cursor.execute('''SELECT name FROM products WHERE category=?''', (self.category_name,))
             products = cursor.fetchall()
             for product in products:
@@ -500,18 +569,20 @@ class display_product(QWidget):
             compare_box.addWidget(compare_but)
             compare_but.clicked.connect(lambda: self.compare_products(combo_box.currentText(), self.product_name))
             sug_label = QLabel('Suggestion:')
-            sug_label.setStyleSheet('color: green;')
+            sug_label.setStyleSheet('color: green;font-size: 20px;')
             suggest_box.addWidget(sug_label)
             cursor.execute('''SELECT name,price1 FROM products WHERE category=?''', (self.category_name,))
             sug_product = cursor.fetchall()
-            for product in sug_product:
-                sug_name = product[0]
-                sug_price1 = product[1]
-                if int(price1) < 1.5*int(sug_price1) and int(price1) > 0.5*int(sug_price1) and sug_name != self.product_name:
-                    product_label = QPushButton(sug_name)
-                    suggest_box.addWidget(product_label)
-                    product_label.clicked.connect(self.open_product_page)
-                    
+            try:
+                for product in sug_product:
+                    sug_name = product[0]
+                    sug_price1 = product[1]
+                    if int(price1) < 1.5*int(sug_price1) and int(price1) > 0.5*int(sug_price1) and sug_name != self.product_name:
+                        product_label = QPushButton(sug_name)
+                        suggest_box.addWidget(product_label)
+                        product_label.clicked.connect(self.open_product_page)
+            except:
+                pass            
 
         self.show()
 
@@ -545,11 +616,12 @@ class display_product(QWidget):
         text = button.text()  # Retrieve the text of the button
         self.product_page = display_product(text,self.username_title,self.category_name)
         self.product_page.product_UI()
+
 class display_favorite_products(QWidget):
     def __init__(self,username):
         super().__init__()
         self.setWindowTitle('Favorite products')
-        self.setGeometry(0, 0, 1700, 800)
+        self.setGeometry(0, 0, 1700, 400)
         self.username = username
         self.fave_UI()
 
@@ -561,6 +633,7 @@ class display_favorite_products(QWidget):
         midlayout = QHBoxLayout()
         mainLayout.addLayout(topLayout)
         mainLayout.addLayout(midlayout)
+        mainLayout.addStretch()
         cat_title = QLabel('Favorite products', self)
         cat_title.setAlignment(Qt.AlignCenter)
         cat_title.setFont(font_title)
@@ -571,30 +644,50 @@ class display_favorite_products(QWidget):
         topLayout.addWidget(remove_but)
         cursor.execute('''SELECT favorite_product_id FROM users WHERE username=?''', (self.username,))
         products = cursor.fetchall()
-        items = [item for item in products[0][0].split(',') if item]
-        for product in items:
-            combo_box.addItem(product)
-        remove_but.clicked.connect(lambda: self.remove_product(combo_box.currentText()))    
-        for product in items:
-            cursor.execute('''SELECT picture FROM products WHERE name=?''', (product,))
-            product_detail = cursor.fetchall()
-            picture_data = product_detail[0][0]
-            self.product_layout = QVBoxLayout()
-            pixmap = QPixmap()
-            pixmap.loadFromData(picture_data)
-            desired_width = 200  
-            desired_height = 200  
-            scaled_pixmap = pixmap.scaled(desired_width, desired_height, Qt.AspectRatioMode.KeepAspectRatio)
-            product_image = QLabel(self)
-            product_image.setPixmap(scaled_pixmap)
-            product_image.setAlignment(Qt.AlignCenter)
-            product_label = QPushButton(product)
-            self.product_layout.addWidget(product_image)
-            self.product_layout.addWidget(product_label)
-            midlayout.addLayout(self.product_layout)
-            product_label.clicked.connect(lambda : self.open_product_page('None'))            
-        self.setLayout(mainLayout)
-        self.show()
+        try:
+            items = [item for item in products[0][0].split(',') if item]
+            for product in items:
+                combo_box.addItem(product)
+            remove_but.clicked.connect(lambda: self.remove_product(combo_box.currentText()))    
+            for product in items:
+                cursor.execute('''SELECT picture FROM products WHERE name=?''', (product,))
+                product_detail = cursor.fetchall()
+                picture_data = product_detail[0][0]
+                self.product_layout = QVBoxLayout()
+                pixmap = QPixmap()
+                pixmap.loadFromData(picture_data)
+                desired_width = 200  
+                desired_height = 200  
+                scaled_pixmap = pixmap.scaled(desired_width, desired_height, Qt.AspectRatioMode.KeepAspectRatio)
+                product_image = QLabel(self)
+                product_image.setPixmap(scaled_pixmap)
+                product_image.setAlignment(Qt.AlignCenter)
+                product_label = QPushButton(product)
+                product_label.setStyleSheet(
+                """
+                QPushButton {
+                    background-color: #4CAF50;
+                    border: none;
+                    color: white;
+                    padding: 8px 16px;
+                    text-align: center;
+                    font-size: 16px;
+
+                }
+                QPushButton:hover {
+                    background-color: #45a049;
+                }
+
+                """
+            )
+                self.product_layout.addWidget(product_image)
+                self.product_layout.addWidget(product_label)
+                midlayout.addLayout(self.product_layout)
+                product_label.clicked.connect(lambda : self.open_product_page('None'))            
+            self.setLayout(mainLayout)
+            self.show()
+        except:
+            QMessageBox.information(self,'Error','Please login')    
     def remove_product(self,removed_pro):
         cursor.execute('''SELECT favorite_product_id FROM users WHERE username=?''', (self.username,))
         existing_product = cursor.fetchone()
@@ -639,110 +732,112 @@ class display_compare(QWidget):
         pro1_mainlayout.addLayout(price3_left_layout)
         pro1_mainlayout.addLayout(description_left_layout)
         cursor.execute('''SELECT price1, price2, price3, description, picture,url1,url2,url3 FROM products WHERE name=?''', (self.product1,))
-        product_detail = cursor.fetchall()
-        price1_left = product_detail[0][0]
-        price2_left = product_detail[0][1]
-        price3_left = product_detail[0][2]
-        description_left = product_detail[0][3]
-        picture_data_left =  product_detail[0][4]
-        url1_left = product_detail[0][5]
-        url2_left = product_detail[0][6]
-        url3_left = product_detail[0][7]
-        pixmap_left = QPixmap()
-        pixmap_left.loadFromData(picture_data_left)
-        desired_width = 200  # Set the desired width for resizing
-        desired_height = 200  # Set the desired height for resizing
-        scaled_pixmap = pixmap_left.scaled(desired_width, desired_height, Qt.AspectRatioMode.KeepAspectRatio)
-        product_image_left = QLabel(self)
-        product_image_left.setPixmap(scaled_pixmap)
-        product_image_left.setAlignment(Qt.AlignCenter)
-        image_left_layout.addWidget(product_image_left)
-        prodect_left_name = QLabel(self.product1)
-        prodect_left_name.setAlignment(Qt.AlignCenter)
-        price1_lable = QLabel('Technolife price :')
-        price1_value = QPushButton(str(price1_left))
-        price2_lable = QLabel('Digikala price :')
-        price2_value = QPushButton(str(price2_left))
-        price3_lable = QLabel('Divar price :')
-        price3_value = QPushButton(str(price3_left))
-        price1_value.clicked.connect(lambda: self.open_web_page(url1_left))
-        price2_value.clicked.connect(lambda: self.open_web_page(url2_left))
-        price3_value.clicked.connect(lambda: self.open_web_page(url3_left))
-        name_left_layout.addWidget(prodect_left_name)
-        price1_left_layout.addWidget(price1_lable)
-        price1_left_layout.addWidget(price1_value)
-        price2_left_layout.addWidget(price2_lable)
-        price2_left_layout.addWidget(price2_value)
-        price3_left_layout.addWidget(price3_lable)
-        price3_left_layout.addWidget(price3_value)
-        # self.setLayout(mainlayout)
-        des_label = QLabel('Description:')
-        description_left_layout.addWidget(des_label)
-        description_text = QTextEdit()
-        description_text.setReadOnly(True)
-        description_text.setText(description_left)
-        description_left_layout.addWidget(description_text)
-        # name_left_layout = QHBoxLayout
-        image_right_layout = QHBoxLayout()
-        name_right_layout = QHBoxLayout()
-        price1_right_layout = QHBoxLayout()
-        price2_right_layout = QHBoxLayout()
-        price3_right_layout = QHBoxLayout()
-        description_right_layout = QHBoxLayout()
-        # pro1_mainlayout.addLayout(name_left_layout)
-        pro2_mainlayout.addLayout(image_right_layout)
-        pro2_mainlayout.addLayout(name_right_layout)
-        pro2_mainlayout.addLayout(price1_right_layout)
-        pro2_mainlayout.addLayout(price2_right_layout)
-        pro2_mainlayout.addLayout(price3_right_layout)
-        pro2_mainlayout.addLayout(description_right_layout)
-        cursor.execute('''SELECT price1, price2, price3, description, picture,url1,url2,url3 FROM products WHERE name=?''', (self.product2,))
-        product_detail = cursor.fetchall()
-        price1_right = product_detail[0][0]
-        price2_right = product_detail[0][1]
-        price3_right = product_detail[0][2]
-        description_right = product_detail[0][3]
-        picture_data_right =  product_detail[0][4]
-        url1_right = product_detail[0][5]
-        url2_right = product_detail[0][6]
-        url3_right = product_detail[0][7]
-        pixmap_right = QPixmap()
-        pixmap_right.loadFromData(picture_data_right)
-        desired_width = 200  # Set the desired width for resizing
-        desired_height = 200  # Set the desired height for resizing
-        scaled_pixmap = pixmap_right.scaled(desired_width, desired_height, Qt.AspectRatioMode.KeepAspectRatio)
-        product_image_right = QLabel(self)
-        product_image_right.setPixmap(scaled_pixmap)
-        product_image_right.setAlignment(Qt.AlignCenter)
-        image_right_layout.addWidget(product_image_right)        
-        prodect_right_name = QLabel(self.product2)
-        prodect_right_name.setAlignment(Qt.AlignCenter)
-        name_right_layout.addWidget(prodect_right_name)
-        price1_lable2 = QLabel('Technolife price :')
-        price1_value2 = QPushButton(str(price1_right))
-        price2_lable2 = QLabel('Digikala price :')
-        price2_value2 = QPushButton(str(price2_right))
-        price3_lable2 = QLabel('Divar price :')
-        price3_value2 = QPushButton(str(price3_right))
-        price1_value2.clicked.connect(lambda: self.open_web_page(url1_right))
-        price2_value2.clicked.connect(lambda: self.open_web_page(url2_right))
-        price2_value2.clicked.connect(lambda: self.open_web_page(url3_right))
-        price1_right_layout.addWidget(price1_lable2)
-        price1_right_layout.addWidget(price1_value2)
-        price2_right_layout.addWidget(price2_lable2)
-        price2_right_layout.addWidget(price2_value2)
-        price3_right_layout.addWidget(price3_lable2)
-        price3_right_layout.addWidget(price3_value2)
-        # self.setLayout(mainlayout)
-        des_label2 = QLabel('Description:')
-        description_right_layout.addWidget(des_label2)
-        description_text2 = QTextEdit()
-        description_text2.setReadOnly(True)
-        description_text2.setText(description_right)
-        description_right_layout.addWidget(description_text2)                        
-        self.setLayout(mainLayout)
-        self.show()
-    
+        try:
+            product_detail = cursor.fetchall()
+            price1_left = product_detail[0][0]
+            price2_left = product_detail[0][1]
+            price3_left = product_detail[0][2]
+            description_left = product_detail[0][3]
+            picture_data_left =  product_detail[0][4]
+            url1_left = product_detail[0][5]
+            url2_left = product_detail[0][6]
+            url3_left = product_detail[0][7]
+            pixmap_left = QPixmap()
+            pixmap_left.loadFromData(picture_data_left)
+            desired_width = 200  # Set the desired width for resizing
+            desired_height = 200  # Set the desired height for resizing
+            scaled_pixmap = pixmap_left.scaled(desired_width, desired_height, Qt.AspectRatioMode.KeepAspectRatio)
+            product_image_left = QLabel(self)
+            product_image_left.setPixmap(scaled_pixmap)
+            product_image_left.setAlignment(Qt.AlignCenter)
+            image_left_layout.addWidget(product_image_left)
+            prodect_left_name = QLabel(self.product1)
+            prodect_left_name.setAlignment(Qt.AlignCenter)
+            price1_lable = QLabel('Technolife price :')
+            price1_value = QPushButton(str(price1_left))
+            price2_lable = QLabel('Digikala price :')
+            price2_value = QPushButton(str(price2_left))
+            price3_lable = QLabel('Divar price :')
+            price3_value = QPushButton(str(price3_left))
+            price1_value.clicked.connect(lambda: self.open_web_page(url1_left))
+            price2_value.clicked.connect(lambda: self.open_web_page(url2_left))
+            price3_value.clicked.connect(lambda: self.open_web_page(url3_left))
+            name_left_layout.addWidget(prodect_left_name)
+            price1_left_layout.addWidget(price1_lable)
+            price1_left_layout.addWidget(price1_value)
+            price2_left_layout.addWidget(price2_lable)
+            price2_left_layout.addWidget(price2_value)
+            price3_left_layout.addWidget(price3_lable)
+            price3_left_layout.addWidget(price3_value)
+            # self.setLayout(mainlayout)
+            des_label = QLabel('Description:')
+            description_left_layout.addWidget(des_label)
+            description_text = QTextEdit()
+            description_text.setReadOnly(True)
+            description_text.setText(description_left)
+            description_left_layout.addWidget(description_text)
+            # name_left_layout = QHBoxLayout
+            image_right_layout = QHBoxLayout()
+            name_right_layout = QHBoxLayout()
+            price1_right_layout = QHBoxLayout()
+            price2_right_layout = QHBoxLayout()
+            price3_right_layout = QHBoxLayout()
+            description_right_layout = QHBoxLayout()
+            # pro1_mainlayout.addLayout(name_left_layout)
+            pro2_mainlayout.addLayout(image_right_layout)
+            pro2_mainlayout.addLayout(name_right_layout)
+            pro2_mainlayout.addLayout(price1_right_layout)
+            pro2_mainlayout.addLayout(price2_right_layout)
+            pro2_mainlayout.addLayout(price3_right_layout)
+            pro2_mainlayout.addLayout(description_right_layout)
+            cursor.execute('''SELECT price1, price2, price3, description, picture,url1,url2,url3 FROM products WHERE name=?''', (self.product2,))
+            product_detail = cursor.fetchall()
+            price1_right = product_detail[0][0]
+            price2_right = product_detail[0][1]
+            price3_right = product_detail[0][2]
+            description_right = product_detail[0][3]
+            picture_data_right =  product_detail[0][4]
+            url1_right = product_detail[0][5]
+            url2_right = product_detail[0][6]
+            url3_right = product_detail[0][7]
+            pixmap_right = QPixmap()
+            pixmap_right.loadFromData(picture_data_right)
+            desired_width = 200  # Set the desired width for resizing
+            desired_height = 200  # Set the desired height for resizing
+            scaled_pixmap = pixmap_right.scaled(desired_width, desired_height, Qt.AspectRatioMode.KeepAspectRatio)
+            product_image_right = QLabel(self)
+            product_image_right.setPixmap(scaled_pixmap)
+            product_image_right.setAlignment(Qt.AlignCenter)
+            image_right_layout.addWidget(product_image_right)        
+            prodect_right_name = QLabel(self.product2)
+            prodect_right_name.setAlignment(Qt.AlignCenter)
+            name_right_layout.addWidget(prodect_right_name)
+            price1_lable2 = QLabel('Technolife price :')
+            price1_value2 = QPushButton(str(price1_right))
+            price2_lable2 = QLabel('Digikala price :')
+            price2_value2 = QPushButton(str(price2_right))
+            price3_lable2 = QLabel('Divar price :')
+            price3_value2 = QPushButton(str(price3_right))
+            price1_value2.clicked.connect(lambda: self.open_web_page(url1_right))
+            price2_value2.clicked.connect(lambda: self.open_web_page(url2_right))
+            price2_value2.clicked.connect(lambda: self.open_web_page(url3_right))
+            price1_right_layout.addWidget(price1_lable2)
+            price1_right_layout.addWidget(price1_value2)
+            price2_right_layout.addWidget(price2_lable2)
+            price2_right_layout.addWidget(price2_value2)
+            price3_right_layout.addWidget(price3_lable2)
+            price3_right_layout.addWidget(price3_value2)
+            # self.setLayout(mainlayout)
+            des_label2 = QLabel('Description:')
+            description_right_layout.addWidget(des_label2)
+            description_text2 = QTextEdit()
+            description_text2.setReadOnly(True)
+            description_text2.setText(description_right)
+            description_right_layout.addWidget(description_text2)                        
+            self.setLayout(mainLayout)
+            self.show()
+        except:
+            QMessageBox.information(self,'Error','Nothing to compare')   
     def open_web_page(self,url):
         url1 = QUrl(str(url))
         if not url1.isValid():
@@ -766,12 +861,15 @@ class dynamic_Window(QWidget):
         midlayout = QHBoxLayout()
         bottomlayout = QHBoxLayout()
         mainLayout.addLayout(topLayout)
+        mainLayout.addStretch()
         mainLayout.addLayout(midlayout)
+        mainLayout.addStretch()
         mainLayout.addLayout(bottomlayout)
-        topLayout.addStretch()
+        mainLayout.addStretch
         cat_title = QLabel('Dynamic products')
         cat_title.setAlignment(Qt.AlignCenter)
         cat_title.setFont(font_title)
+        add_lable = QLabel('Please insert your link')
         add_product_but = QPushButton('add product')
         product_link = QLineEdit(self)
         combo_box = QComboBox(self)
@@ -779,10 +877,10 @@ class dynamic_Window(QWidget):
         combo_box.addItem('Digikala')
         # combo_box.addItem('Divar')
         topLayout.addWidget(cat_title)
+        midlayout.addWidget(add_lable)
         midlayout.addWidget(product_link)
         midlayout.addWidget(combo_box)
         midlayout.addWidget(add_product_but)
-        topLayout.addStretch()
         self.setLayout(mainLayout)
         add_product_but.clicked.connect(lambda: self.get_first_value(product_link.text(),combo_box.currentText()))
         cursor.execute('''SELECT name FROM products WHERE category=?''', ('Dynamic',))
@@ -795,6 +893,23 @@ class dynamic_Window(QWidget):
             self.product_layout = QVBoxLayout()
             product_image = QLabel(self)
             product_label = QPushButton(name)
+            product_label.setStyleSheet(
+                """
+                QPushButton {
+                    background-color: #4CAF50;
+                    border: none;
+                    color: white;
+                    padding: 8px 16px;
+                    text-align: center;
+                    font-size: 16px;
+
+                }
+                QPushButton:hover {
+                    background-color: #45a049;
+                }
+
+                """
+            )
             pixmap = QPixmap()
             pixmap.loadFromData(picture_data)
             desired_width = 200  # Set the desired width for resizing
@@ -1033,7 +1148,7 @@ class search_page(QWidget):
     def __init__(self,products,category_name,username_title):
         super().__init__()
         self.setWindowTitle('Search result')
-        self.setGeometry(0, 0, 1700, 800)
+        self.setGeometry(0, 0, 1700, 400)
         self.products = products
         self.category_name = category_name
         self.username_title = username_title
@@ -1041,8 +1156,15 @@ class search_page(QWidget):
 
     def search_UI(self):
         mainLayout = QVBoxLayout()
+        title_layout = QHBoxLayout()
         topLayout = QHBoxLayout()
+        mainLayout.addLayout(title_layout)
+        mainLayout.addStretch()
         mainLayout.addLayout(topLayout)
+        title = QLabel('Result')
+        title.setStyleSheet('color: red;font-size: 28px;font-weight: bold;')
+        title.setAlignment(Qt.AlignCenter)
+        title_layout.addWidget(title)
         for product in self.products:    
             cursor.execute('''SELECT picture FROM products WHERE name=?''', (product,))
             product_detail = cursor.fetchall()
@@ -1057,8 +1179,26 @@ class search_page(QWidget):
             product_image.setPixmap(scaled_pixmap)
             product_image.setAlignment(Qt.AlignCenter)
             product_label = QPushButton(product)
+            product_label.setStyleSheet(
+                """
+                QPushButton {
+                    background-color: #4CAF50;
+                    border: none;
+                    color: white;
+                    padding: 8px 16px;
+                    text-align: center;
+                    font-size: 16px;
+
+                }
+                QPushButton:hover {
+                    background-color: #45a049;
+                }
+
+                """
+            )
             self.product_layout.addWidget(product_image)
             self.product_layout.addWidget(product_label)
+            self.product_layout.addStretch()
             topLayout.addLayout(self.product_layout)
             product_label.clicked.connect(self.open_product_page)
         

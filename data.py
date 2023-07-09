@@ -10,6 +10,7 @@ import threading
 driver=webdriver.Chrome()
 
 def static_technolife(url) :
+    # driver=webdriver.Chrome()
     try :
       driver.get(url)
       time.sleep(5)
@@ -44,6 +45,7 @@ def persian_to_english(text):
     return text.translate(translation_table)
 
 def static_divar(url) :
+    # driver=webdriver.Chrome()
     try:
         driver.get(url)
         time.sleep(5)
@@ -59,6 +61,7 @@ def static_divar(url) :
 
 def static_digikala(url) :
      try :
+        # driver=webdriver.Chrome()
         driver.get(url)
         time.sleep(7)
         price2=driver.find_elements(By.CSS_SELECTOR,"div.product-list_ProductList__item__LiiNI:nth-child(1) > a:nth-child(1) > div:nth-child(1) > article:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4) > div:nth-child(1) > div:nth-child(1)")
