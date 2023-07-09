@@ -20,7 +20,7 @@ import io
 import tempfile
 import requests
 
-conn = sqlite3.connect('users3.db')
+conn = sqlite3.connect('database.db')
 cursor = conn.cursor()
 
 class Window(QWidget):
